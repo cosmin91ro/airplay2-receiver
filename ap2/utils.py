@@ -221,7 +221,10 @@ def get_volume():
                 pct = 0
         vol = interpolate(pct, 0, 100, -30, 0)
     elif subsys == "Linux":
-        line_pct = subprocess.check_output(["amixer", "get", "PCM"]).splitlines()[-1]
+        try:
+            line_pct = subprocess.check_output(["amixer", "get", "PCM"]).splitlines()[-1]
+        except subprocess.CalledProcessError:
+            line_pct = subprocess.check_output(["amixer", "get", "Master"]).splitlines()[-1]
         m = re.search(b"\[([0-9]+)%\]", line_pct)
         if m:
             pct = int(m.group(1))
